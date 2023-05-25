@@ -1,6 +1,7 @@
 {
   "name": "todo-angular",
   "version": "0.0.0",
+  "homepage": "https://pete-g00.github.com/todo-angular",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
