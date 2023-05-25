@@ -20,7 +20,7 @@ export class PopupComponent implements OnInit {
   constructor(
       public dialogRef: MatDialogRef<NavbarComponent, TaskTile>,
       @Inject(MAT_DIALOG_DATA) public data: PopupProps,
-      private formBuilder:UntypedFormBuilder,
+      @Inject(UntypedFormBuilder) private formBuilder:UntypedFormBuilder,
       private snackBar: MatSnackBar
     ) { }
 
