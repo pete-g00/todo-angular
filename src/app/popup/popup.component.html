@@ -1,0 +1,36 @@
+<h1 mat-dialog-title *ngIf="data.create">Enter a new task</h1>
+<h1 mat-dialog-title *ngIf="!data.create">Update a task</h1>
+<div mat-dialog-content>
+    <p>Enter a title for the task</p>
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title">
+            <mat-error *ngIf="form.controls['title'].invalid">Title Required</mat-error>
+        </mat-form-field>
+        <p>Enter a description for the task</p>
+        <mat-form-field appearance="fill">
+            <mat-label>Description</mat-label>
+            <textarea cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" matInput formControlName="description"></textarea>
+            <mat-error *ngIf="form.controls['description'].invalid">Description Required</mat-error>
+        </mat-form-field>
+        <p>Choose the length of the task</p>
+        <mat-form-field>
+            <mat-label>Length: {{form.get('duration')!.value}} day(s)</mat-label>
+            <mat-slider min="1" max="10" showTickMarks formControlName="duration">
+                <input matInput matSliderThumb>
+            </mat-slider>
+        </mat-form-field>
+        <p>Choose how many days left to complete the task</p>
+        <mat-form-field>
+            <mat-label>Due in {{form.get('left')!.value}} day(s)</mat-label>
+            <mat-slider min="1" max="10" showTickMarks formControlName="left">
+                <input matInput matSliderThumb>
+            </mat-slider>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="save()" [disabled]="!form.valid" cdkFocusInitial *ngIf="data.create">Add Task</button>
+    <button mat-button (click)="save()" [disabled]="!form.valid" cdkFocusInitial *ngIf="!data.create">Update Task</button>
+</div>

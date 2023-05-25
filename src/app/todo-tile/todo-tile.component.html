@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{todo.title}}</mat-card-title>
+        <mat-card-subtitle>{{todo.description}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <span class="float-left">Time needed: {{todo.duration}} day(s)</span>
+        <span class="float-right">Due in: {{todo.left}} day(s)</span>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="primary" (click)="deleteTask()">Delete</button>
+        <button mat-button color="secondary" (click)="editTask()">Edit</button>
+        <button *ngIf="!todo.isCompleted" mat-button (click)="taskComplete()">Mark as complete</button>
+        <button *ngIf="todo.isCompleted" mat-button (click)="taskIncomplete()">Mark as incomplete</button>
+    </mat-card-actions>
+</mat-card>
