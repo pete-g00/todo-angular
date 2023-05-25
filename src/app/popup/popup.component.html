@@ -15,22 +15,16 @@
             <mat-error *ngIf="form.controls['description'].invalid">Description Required</mat-error>
         </mat-form-field>
         <p>Choose the length of the task</p>
-        <mat-form-field>
-            <mat-label>Length: {{form.get('duration')!.value}} day(s)</mat-label>
-            <mat-slider min="1" max="10" showTickMarks formControlName="duration">
-                <input matInput matSliderThumb>
-            </mat-slider>
-        </mat-form-field>
+        <mat-slider min="1" max="10" discrete>
+            <input matSliderThumb matInput formControlName="duration">
+        </mat-slider>
         <p>Choose how many days left to complete the task</p>
-        <mat-form-field>
-            <mat-label>Due in {{form.get('left')!.value}} day(s)</mat-label>
-            <mat-slider min="1" max="10" showTickMarks formControlName="left">
-                <input matInput matSliderThumb>
-            </mat-slider>
-        </mat-form-field>
+        <mat-slider min="1" max="10" discrete>
+            <input matSliderThumb matInput formControlName="left">
+        </mat-slider>
     </form>
 </div>
 <div mat-dialog-actions align="end">
-    <button mat-button (click)="save()" [disabled]="!form.valid" cdkFocusInitial *ngIf="data.create">Add Task</button>
-    <button mat-button (click)="save()" [disabled]="!form.valid" cdkFocusInitial *ngIf="!data.create">Update Task</button>
+    <button mat-button (click)="save()" [disabled]="!form.valid" *ngIf="data.create">Add Task</button>
+    <button mat-button (click)="save()" [disabled]="!form.valid" *ngIf="!data.create">Update Task</button>
 </div>

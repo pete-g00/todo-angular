@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Select } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 import { AppModel, AppState } from './shared/app.state';
-import { Observable } from 'rxjs';
+import { ChangeFilter, Filter } from './shared/app.actions';
 
 // A task tile
 export interface TaskTile {
@@ -27,12 +27,24 @@ export interface TaskTile {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  @Select(AppState) tasks$: Observable<AppModel>;
   tasks:TaskTile[] = [];
+  filter:Filter = Filter.ALL;
+
+  constructor(public store:Store) {}
 
   ngOnInit() {
-    this.tasks$.subscribe(tasks => {
-      this.tasks = tasks.data;
+    this.store.select<AppModel>(AppState).subscribe(tasks => {
+      this.tasks = tasks.data.filter(value => {
+        if (tasks.filter == Filter.ALL) {
+          return true;
+        } 
+        return tasks.filter == Filter.ONLY_COMPLETE ? value.isCompleted : !value.isCompleted;
+      });
     });
+  }
+
+  selectFilter(filter:Filter) {
+    this.filter = filter;
+    this.store.dispatch(new ChangeFilter(filter));
   }
 }

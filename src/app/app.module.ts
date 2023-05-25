@@ -13,7 +13,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSliderModule} from '@angular/material/slider';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -44,6 +45,7 @@ import { AppState } from './shared/app.state';
     MatSliderModule,
     ReactiveFormsModule,
     MatSnackBarModule,
+    MatButtonToggleModule,
     NgxsModule.forRoot([
       AppState
     ])

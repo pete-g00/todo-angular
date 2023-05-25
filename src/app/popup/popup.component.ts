@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { TaskTile } from '../app.component';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface PopupProps {
@@ -16,11 +16,11 @@ export interface PopupProps {
   styleUrls: ['./popup.component.css']
 })
 export class PopupComponent implements OnInit {
-  form:UntypedFormGroup;
+  form:FormGroup;
   constructor(
       public dialogRef: MatDialogRef<NavbarComponent, TaskTile>,
       @Inject(MAT_DIALOG_DATA) public data: PopupProps,
-      @Inject(UntypedFormBuilder) private formBuilder:UntypedFormBuilder,
+      private formBuilder:FormBuilder,
       private snackBar: MatSnackBar
     ) { }
 

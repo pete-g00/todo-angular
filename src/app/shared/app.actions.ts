@@ -24,3 +24,19 @@ export class IncompleteTask{
     static readonly type = '[app] incomplete task';
     constructor(public payload:TaskTile) {}
 }
+
+export enum Filter {
+    // show all tasks
+    ALL,
+
+    // show only completed tasks
+    ONLY_COMPLETE,
+
+    // show only incomplete tasks
+    ONLY_INCOMPLETE
+}
+
+export class ChangeFilter {
+    static readonly type = '[app] change filter';
+    constructor(public payload:Filter) {}
+}

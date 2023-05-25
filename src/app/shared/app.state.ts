@@ -1,11 +1,12 @@
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch, append, removeItem, updateItem } from '@ngxs/store/operators';
-import { AddTask, CompleteTask, IncompleteTask, RemoveTask, UpdateTask } from './app.actions';
+import { AddTask, CompleteTask, IncompleteTask, RemoveTask, UpdateTask, Filter, ChangeFilter } from './app.actions';
 import { TaskTile } from './../app.component';
 import { Injectable } from '@angular/core';
 
 export interface AppModel {
     data: TaskTile[];
+    filter: Filter;
 }
 
 @State<AppModel>({
@@ -25,11 +26,12 @@ export interface AppModel {
             isCompleted: false,
         }, {
             title: "Learn Flutter",
-            description: "Learn how to code a web app using Flutter with a focus on state management!",
+            description: "Learn how to code an android and an iOS app using Flutter with a focus on state management!",
             duration: 2,
             left: 3,
             isCompleted: false,
-        }]
+        }],
+        filter: Filter.ALL
     },
 })
 
@@ -82,6 +84,15 @@ export class AppState {
                     ... action.payload,
                     isCompleted: false
                 })
+            })
+        );
+    }
+
+    @Action(ChangeFilter)
+    changeFilter(ctx:StateContext<AppModel>, action:ChangeFilter) {
+        ctx.setState(
+            patch<AppModel>({
+                filter: action.payload
             })
         );
     }
