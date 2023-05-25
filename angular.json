@@ -103,6 +103,5 @@
         }
       }
     }
-  },
-  "defaultProject": "todo-angular"
+  }
 }
