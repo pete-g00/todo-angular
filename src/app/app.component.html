@@ -5,18 +5,15 @@
     <div class="mt-5">
         <h1>Keep track of your TODOs</h1>
     </div>
-    <div class="filters pt-5 pb-5">
-        <h3>Select the TODOs to show</h3>
-        <mat-button-toggle-group name="filter" aria-label="TODO filters" (change)="selectFilter($event.value)">
-            <mat-button-toggle [value]="0" [checked]="filter==0">All</mat-button-toggle>
-            <mat-button-toggle [value]="1" [checked]="filter==1">Completed</mat-button-toggle>
-            <mat-button-toggle [value]="2" [checked]="filter==2">Incomplete</mat-button-toggle>
-        </mat-button-toggle-group>
-    </div>
     <div class="tasks pt-5 pb-5">
-        <h2>TODOs</h2>
-        <div *ngFor="let task of tasks" class="p-2">
-            <app-todo-tile [todo]=task></app-todo-tile>
+        <div *ngIf="dataLoading">
+            <mat-spinner></mat-spinner>
+        </div>
+        <div *ngIf="!dataLoading && tasks.length == 0">
+            <p>There are no TODOs to show</p>
+        </div>
+        <div *ngFor="let task of tasks; let i=index" class="p-2" #tasks>
+            <app-todo-tile [todo]=task [i]="i"></app-todo-tile>
         </div>
     </div>
 </main>

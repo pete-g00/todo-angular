@@ -14,14 +14,14 @@
             <textarea cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" matInput formControlName="description"></textarea>
             <mat-error *ngIf="form.controls['description'].invalid">Description Required</mat-error>
         </mat-form-field>
-        <p>Choose the length of the task</p>
-        <mat-slider min="1" max="10" discrete>
-            <input matSliderThumb matInput formControlName="duration">
-        </mat-slider>
-        <p>Choose how many days left to complete the task</p>
-        <mat-slider min="1" max="10" discrete>
-            <input matSliderThumb matInput formControlName="left">
-        </mat-slider>
+        <p>Choose when the task is due</p>
+        <mat-form-field>
+            <mat-label>Choose a date</mat-label>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <input matInput [matDatepicker]="dueDate" formControlName="due">
+            <mat-datepicker-toggle matIconSuffix [for]="dueDate"></mat-datepicker-toggle>
+            <mat-datepicker #dueDate></mat-datepicker>
+        </mat-form-field>
     </form>
 </div>
 <div mat-dialog-actions align="end">

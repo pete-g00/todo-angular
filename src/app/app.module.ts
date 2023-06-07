@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgxsModule } from '@ngxs/store';
+
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
@@ -15,13 +17,30 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
+import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { provideDatabase,getDatabase } from '@angular/fire/database';
+import { provideAuth,getAuth } from '@angular/fire/auth';
+import { provideAnalytics,getAnalytics,ScreenTrackingService,UserTrackingService } from '@angular/fire/analytics';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { provideFunctions,getFunctions } from '@angular/fire/functions';
+import { provideMessaging,getMessaging } from '@angular/fire/messaging';
+import { providePerformance,getPerformance } from '@angular/fire/performance';
+import { provideRemoteConfig,getRemoteConfig } from '@angular/fire/remote-config';
+import { provideStorage, getStorage } from '@angular/fire/storage';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { TodoTileComponent } from './todo-tile/todo-tile.component';
 import { PopupComponent } from './popup/popup.component';
-import { AppState } from './shared/app.state';
 
+import { environment } from '../environments/environment';
+import { TaskEffects } from './state/tasks/tasks.effects';
+import { themeReducer } from './state/theme/theme.reducer';
+import { tasksReducer } from './state/tasks/tasks.reducer';
 
 @NgModule({
   declarations: [
@@ -46,11 +65,31 @@ import { AppState } from './shared/app.state';
     ReactiveFormsModule,
     MatSnackBarModule,
     MatButtonToggleModule,
-    NgxsModule.forRoot([
-      AppState
-    ])
+    MatNativeDateModule,
+    MatDatepickerModule,
+    MatProgressSpinnerModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideDatabase(() => getDatabase()),
+    provideAuth(() => getAuth()),
+    StoreModule.forRoot({
+      theme: themeReducer,
+      tasks: tasksReducer
+    }),
+    EffectsModule.forRoot([
+      TaskEffects
+    ]),
+    provideAnalytics(() => getAnalytics()),
+    provideFirestore(() => getFirestore()),
+    provideFunctions(() => getFunctions()),
+    provideMessaging(() => getMessaging()),
+    providePerformance(() => getPerformance()),
+    provideRemoteConfig(() => getRemoteConfig()),
+    provideStorage(() => getStorage()),
   ],
-  providers: [],
+  providers: [
+    ScreenTrackingService,
+    UserTrackingService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

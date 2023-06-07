@@ -1,50 +1,38 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngxs/store';
-import { AppModel, AppState } from './shared/app.state';
-import { ChangeFilter, Filter } from './shared/app.actions';
+import { Store } from '@ngrx/store';
 
-// A task tile
-export interface TaskTile {
-  // the title of the task
-  title: string;
-
-  // the description of the task
-  description: string;
-
-  // the time it should take to complete the task
-  duration: number;
-
-  // the number of days left to complete the task
-  left: number;
-
-  // whether the task has been completed
-  isCompleted: boolean;
-}
+import { TaskTile, TasksState } from './state/tasks/tasks.reducer';
+import { loadTasksFromDB } from './state/tasks/tasks.actions';
+import { AppTheme } from './state/theme/theme.reducer';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: []
 })
 export class AppComponent implements OnInit {
   tasks:TaskTile[] = [];
-  filter:Filter = Filter.ALL;
+  dataLoading = true;
 
-  constructor(public store:Store) {}
+  constructor(private store:Store<{tasks: TasksState; theme: AppTheme;}>) { }
 
-  ngOnInit() {
-    this.store.select<AppModel>(AppState).subscribe(tasks => {
-      this.tasks = tasks.data.filter(value => {
-        if (tasks.filter == Filter.ALL) {
-          return true;
-        } 
-        return tasks.filter == Filter.ONLY_COMPLETE ? value.isCompleted : !value.isCompleted;
-      });
+  public ngOnInit(): void {
+    this.store.select("tasks").subscribe(state => {
+      if (!state.loadingData && !state.dataPresent) {
+        this.store.dispatch(loadTasksFromDB());
+      } else if (state.errorLoadingData) {
+        console.log("Failed to load the tasks");
+      } else {
+        this.dataLoading = false;
+        this.tasks = state.tasks;
+      }
     });
-  }
-
-  selectFilter(filter:Filter) {
-    this.filter = filter;
-    this.store.dispatch(new ChangeFilter(filter));
+    this.store.select("theme").subscribe(theme => {
+      if (theme === "light") {
+        document.body.classList.add("light-theme");
+      } else {
+        document.body.classList.remove("light-theme");
+      }
+    })
   }
 }

@@ -1,0 +1,55 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$dark-theme: mat.define-dark-theme((
+  color: (
+    primary: mat.define-palette(mat.$green-palette),
+    accent: mat.define-palette(mat.$purple-palette),
+    warn: mat.define-palette(mat.$red-palette),
+  )
+));
+
+$dark-palette-color : map-get($dark-theme, color);
+$dark-background: map-get($dark-palette-color, background);
+
+$dark-background: map_merge($dark-background, (background: #000000de));
+
+$dark-palette-color: map_merge($dark-palette-color, (background: $dark-background));
+$dark-theme: map_merge($dark-theme, (color: $dark-palette-color));
+
+@include mat.all-component-themes($dark-theme);
+
+$light-theme: mat.define-light-theme((
+  color: (
+    primary: mat.define-palette(mat.$orange-palette),
+    accent: mat.define-palette(mat.$purple-palette),
+    warn: mat.define-palette(mat.$red-palette),
+  )
+));
+
+.light-theme {
+  @include mat.all-component-colors($light-theme);
+}
+
+@mixin mix-button-toggle-colors($app-theme) {
+  $color-config:    mat.get-color-config($app-theme);
+  $primary-palette: map-get($color-config, 'primary');
+  $accent-palette:  map-get($color-config, 'accent');
+
+  .mat-button-toggle {
+    background-color: mat.get-color-from-palette($primary-palette, 500);
+    color: mat.get-color-from-palette($primary-palette, default-contrast);
+  }
+
+  .mat-button-toggle-checked {
+    background-color: mat.get-color-from-palette($accent-palette, 500);
+    color: mat.get-color-from-palette($accent-palette, default-contrast);
+  }
+}
+
+@include mix-button-toggle-colors($dark-theme);
+
+.light-theme {
+  @include mix-button-toggle-colors($light-theme);
+}
