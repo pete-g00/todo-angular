@@ -6,14 +6,24 @@
         <h1>Keep track of your TODOs</h1>
     </div>
     <div class="tasks pt-5 pb-5">
-        <div *ngIf="dataLoading">
+        <div *ngIf="dataLoading" class="justify-center flex">
             <mat-spinner></mat-spinner>
         </div>
-        <div *ngIf="!dataLoading && tasks.length == 0">
-            <p>There are no TODOs to show</p>
-        </div>
-        <div *ngFor="let task of tasks; let i=index" class="p-2" #tasks>
-            <app-todo-tile [todo]=task [i]="i"></app-todo-tile>
+        <div *ngIf="!dataLoading">
+            <div *ngIf="user === null">
+                <p>Please log in to see your TODOs</p>
+            </div>
+            <div *ngIf="user !== null">
+                <div *ngIf="errorLoadingData">
+                    <p>Error Loading TODOs. Please Refresh</p>
+                </div>
+                <div *ngIf="!dataLoading && !errorLoadingData && tasks.length === 0">
+                    <p>There are no TODOs to show</p>
+                </div>
+                <div *ngFor="let task of tasks; let i=index;" class="p-2">
+                    <app-todo-tile [todo]="task" [i]="i" [id]="indices[i]"></app-todo-tile>
+                </div>
+            </div>
         </div>
     </div>
 </main>

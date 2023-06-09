@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 
@@ -7,21 +7,35 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { PopupComponent, PopupProps } from '../popup/popup.component';
 import { deleteTaskFromDB, removeTask, uploadTaskToDB } from '../state/tasks/tasks.actions';
+import { Subscription } from 'rxjs';
+import { User } from 'firebase/auth';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-todo-tile',
   templateUrl: './todo-tile.component.html',
   styleUrls: []
 })
-export class TodoTileComponent implements OnInit {
+export class TodoTileComponent implements OnInit, OnDestroy {
   @Input() todo!: TaskTile;
   @Input() i!: number;
+  @Input() id!: string;
   deletingTask = false;
+  deleteSubscription: Subscription|undefined;
+  auth:Auth = inject(Auth);
+  userId:string = "";
 
   constructor(public dialog: MatDialog, private store:Store<{tasks: TasksState}>, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.store.select("tasks").subscribe((state) => {
+    this.auth.onAuthStateChanged(user => {
+      if (user !== null) {
+        this.userId = user.uid;
+      } else {
+        console.error("Tile without sign in!");
+      }
+    });
+    this.deleteSubscription = this.store.select("tasks").subscribe((state) => {
       if (this.deletingTask && state.deleteSuccess?.i == this.i) {
         if (state.deleteSuccess.success) {
           this.onTaskDeleted();
@@ -41,7 +55,7 @@ export class TodoTileComponent implements OnInit {
   
   deleteTask() {
     console.log("Dispatching delete task");
-    this.store.dispatch(deleteTaskFromDB({i: this.i}));
+    this.store.dispatch(deleteTaskFromDB({i: this.i, id: this.id, userId: this.userId}));
     this.deletingTask = true;
   }
 
@@ -56,10 +70,17 @@ export class TodoTileComponent implements OnInit {
 
   editTask() {
     console.log("Editing task");
-    this.dialog.open<PopupComponent, PopupProps, TaskTile>(PopupComponent, {data: {
-      create: false,
-      task: this.todo,
-      i: this.i
-    }});
+    this.dialog.open<PopupComponent, PopupProps, TaskTile>(PopupComponent, {
+      data: {
+        create: false,
+        task: this.todo,
+        i: this.i,
+        id: this.id
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+      this.deleteSubscription?.unsubscribe();
   }
 }

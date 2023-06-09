@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { deleteTaskFromDB, deleteTaskFromDBFailure, deleteTaskFromDBSuccess, loadTasksFromDB, loadTasksFromDBFailure, loadTasksFromDBSuccess, uploadTaskToDB, uploadTaskToDBFailure, uploadTaskToDBSuccess } from "./tasks.actions";
 import { from, of } from "rxjs";
 import { map, switchMap, catchError } from "rxjs/operators";
-import { TodoService } from "src/app/task.service";
+import { TodoService } from "src/app/state/tasks/task.service";
 
 @Injectable()
 export class TaskEffects {
@@ -12,36 +12,31 @@ export class TaskEffects {
     loadTasks$ = createEffect(() => 
         this.actions$.pipe(
             ofType(loadTasksFromDB),
-            switchMap(() => 
-                from(this.taskService.getTasks()).pipe(
-                    map(tasks => loadTasksFromDBSuccess({ tasks })),
+            switchMap(({ userId }) => from(this.taskService.getTasks(userId)).pipe(
+                    map(({ indices, tasks }) => loadTasksFromDBSuccess({ tasks, indices })),
                     catchError(() => of(loadTasksFromDBFailure()))
                 )
             )
         )
     );
 
-    updateTask$ = createEffect(() => 
+    uploadTask$ = createEffect(() => 
         this.actions$.pipe(
             ofType(uploadTaskToDB),
-            switchMap(({ task, i }) => {
-                return from(this.taskService.uploadTask(task, i)).pipe(
-                    map(() => uploadTaskToDBSuccess({ i })),
-                    catchError(() => of(uploadTaskToDBFailure({ i })))
-                )
-            })
+            switchMap(({ task, id, userId }) => from(this.taskService.uploadTask(task, userId, id)).pipe(
+                map(() => uploadTaskToDBSuccess()),
+                catchError(() => of(uploadTaskToDBFailure()))
+            ))
         )
     );
 
     deleteTask$ = createEffect(() => 
         this.actions$.pipe(
             ofType(deleteTaskFromDB),
-            switchMap(({ i}) => {
-                return from(this.taskService.deleteTask(i)).pipe(
-                    map(() => deleteTaskFromDBSuccess({ i })),
-                    catchError(() => of(deleteTaskFromDBFailure({ i })))
-                )
-            })
+            switchMap(({ i, id, userId }) => from(this.taskService.deleteTask(userId, id)).pipe(
+                map(() => deleteTaskFromDBSuccess({ i })),
+                catchError(() => of(deleteTaskFromDBFailure({ i })))
+            ))
         )
     );
 }

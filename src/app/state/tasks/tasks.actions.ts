@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { TaskTile } from "./tasks.reducer";
+import { TaskTile, TaskTiles } from "./tasks.reducer";
 
 export const addTask = createAction(
     '[tasks] add task',
@@ -13,14 +13,17 @@ export const removeTask = createAction(
 
 export const updateTask = createAction(
     '[tasks] update task',
-    props<{i: number, newValue: TaskTile}>()
+    props<{i: number; newValue: TaskTile; id: string;}>()
 );
 
-export const loadTasksFromDB = createAction('[tasks] load tasks from db');
+export const loadTasksFromDB = createAction(
+    '[tasks] load tasks from db',
+    props<{userId:string}>()
+);
 
 export const loadTasksFromDBSuccess = createAction(
     '[tasks] load tasks from db success',
-    props<{tasks: TaskTile[]}>()
+    props<{tasks: TaskTiles; indices: string[]}>()
 );
 
 export const loadTasksFromDBFailure = createAction(
@@ -28,31 +31,29 @@ export const loadTasksFromDBFailure = createAction(
 );
 
 export const uploadTaskToDBSuccess = createAction(
-    '[tasks] upload task to db success',
-    props<{i:number}>()
+    '[tasks] upload task to db success'
 );
 
 export const uploadTaskToDB = createAction(
     '[tasks] upload task to db',
-    props<{task: TaskTile, i: number}>()
+    props<{task: TaskTile, userId:string, id: string}>()
 );
 
 export const uploadTaskToDBFailure = createAction(
-    '[tasks] upload task to db fail',
-    props<{i: number}>()
+    '[tasks] upload task to db fail'
 );
 
 export const deleteTaskFromDB = createAction(
-    '[tasks] upload task to db',
-    props<{i: number}>()
+    '[tasks] delete task from db',
+    props<{i: number, id:string, userId: string}>()
 );
 
 export const deleteTaskFromDBSuccess = createAction(
-    '[tasks] upload task to db success',
+    '[tasks] delete task from db success',
     props<{i:number}>()
 );
 
 export const deleteTaskFromDBFailure = createAction(
-    '[tasks] upload task to db fail',
+    '[tasks] delete task to db fail',
     props<{i: number}>()
 );

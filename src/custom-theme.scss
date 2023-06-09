@@ -2,11 +2,13 @@
 
 @include mat.core();
 
+$typography: mat.define-legacy-typography-config();
 $dark-theme: mat.define-dark-theme((
   color: (
     primary: mat.define-palette(mat.$green-palette),
     accent: mat.define-palette(mat.$purple-palette),
     warn: mat.define-palette(mat.$red-palette),
+    typography: $typography
   )
 ));
 
@@ -19,21 +21,31 @@ $dark-palette-color: map_merge($dark-palette-color, (background: $dark-backgroun
 $dark-theme: map_merge($dark-theme, (color: $dark-palette-color));
 
 @include mat.all-component-themes($dark-theme);
+@include mat.all-component-typographies($typography);
 
 $light-theme: mat.define-light-theme((
   color: (
     primary: mat.define-palette(mat.$orange-palette),
     accent: mat.define-palette(mat.$purple-palette),
     warn: mat.define-palette(mat.$red-palette),
+    typography: $typography,
   )
 ));
+
+$light-palette-color : map-get($light-theme, color);
+$light-background: map-get($light-palette-color, background);
+
+$light-background: map_merge($light-background, (background: #ffffffde));
+
+$light-palette-color: map_merge($light-palette-color, (background: $light-background));
+$light-theme: map_merge($light-theme, (color: $light-palette-color));
 
 .light-theme {
   @include mat.all-component-colors($light-theme);
 }
 
 @mixin mix-button-toggle-colors($app-theme) {
-  $color-config:    mat.get-color-config($app-theme);
+  $color-config: mat.get-color-config($app-theme);
   $primary-palette: map-get($color-config, 'primary');
   $accent-palette:  map-get($color-config, 'accent');
 
@@ -52,4 +64,28 @@ $light-theme: mat.define-light-theme((
 
 .light-theme {
   @include mix-button-toggle-colors($light-theme);
+}
+
+@mixin mix-login-card-styling($app-theme, $background-color, $text-color) {
+  $color-config: mat.get-color-config($app-theme);
+  $primary-palette:  map-get($color-config, 'primary');
+  
+  .mdl-card.mdl-shadow--2dp.firebaseui-container {
+    background-color: $background-color;
+  }
+
+  .firebaseui-title, .firebaseui-input {
+    color: $text-color !important;
+  }
+
+  .mdl-button--raised.mdl-button--colored {
+    color: mat.get-color-from-palette($primary-palette, 500) !important;
+    background-color: mat.get-color-from-palette($primary-palette, default-contrast) !important;
+  }
+}
+
+@include mix-login-card-styling($dark-theme, #424242, rgba(255, 255, 255, 0.87));
+
+.light-theme {
+  @include mix-login-card-styling($light-theme, white, rgba(0, 0, 0, 0.87));
 }
