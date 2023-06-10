@@ -22,7 +22,7 @@
             </div>
             <div *ngIf="user !== null">
                 <div *ngIf="errorLoadingData">
-                    <p>Error Loading TODOs. Please Refresh</p>
+                    <p>Error Loading TODOs. Please try again</p>
                 </div>
                 <div *ngIf="!dataLoading && !errorLoadingData && tasks.length === 0">
                     <p>There are no TODOs to show</p>

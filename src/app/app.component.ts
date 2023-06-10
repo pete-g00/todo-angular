@@ -37,19 +37,20 @@ export class AppComponent implements OnInit, OnDestroy {
         this.tasks = [];
         this.indices = [];
       } else {
+        this.errorLoadingData = false;
         this.store.dispatch(loadTasksFromDB({userId: user.uid}));
       }
     });
     
     this.taskSubscription = this.store.select("tasks").subscribe(state => {
-      this.errorLoadingData = false;
       if (this.user !== null) {
         if (state.errorLoadingData) {
           this.errorLoadingData = true;
-        } else if (state.dataPresent) {
           this.dataLoading = false;
+        } else if (state.dataPresent) {
           this.tasks = state.tasks;
           this.indices = state.indices;
+          this.dataLoading = false;
         }
       } 
     });
