@@ -20,6 +20,8 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatSelectModule} from '@angular/material/select';
 
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { provideAuth,getAuth } from '@angular/fire/auth';
@@ -65,6 +67,8 @@ import { SignInComponent } from './sign-in/sign-in.component';
     MatNativeDateModule,
     MatDatepickerModule,
     MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatSelectModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     StoreModule.forRoot({

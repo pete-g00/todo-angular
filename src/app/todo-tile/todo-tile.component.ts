@@ -8,7 +8,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { PopupComponent, PopupProps } from '../popup/popup.component';
 import { deleteTaskFromDB, removeTask, uploadTaskToDB } from '../state/tasks/tasks.actions';
 import { Subscription } from 'rxjs';
-import { User } from 'firebase/auth';
 import { Auth } from '@angular/fire/auth';
 
 @Component({
@@ -31,16 +30,17 @@ export class TodoTileComponent implements OnInit, OnDestroy {
     this.auth.onAuthStateChanged(user => {
       if (user !== null) {
         this.userId = user.uid;
-      } else {
-        console.error("Tile without sign in!");
       }
     });
+    
     this.deleteSubscription = this.store.select("tasks").subscribe((state) => {
       if (this.deletingTask && state.deleteSuccess?.i == this.i) {
         if (state.deleteSuccess.success) {
           this.onTaskDeleted();
         } else {
-          console.log("Failed to delete the task");
+          this.snackBar.open("Failed to delete task. Try again", "Dismiss", {
+            duration: 2500
+          });
         }
       } 
     });
@@ -54,7 +54,6 @@ export class TodoTileComponent implements OnInit, OnDestroy {
   }
   
   deleteTask() {
-    console.log("Dispatching delete task");
     this.store.dispatch(deleteTaskFromDB({i: this.i, id: this.id, userId: this.userId}));
     this.deletingTask = true;
   }
@@ -69,7 +68,6 @@ export class TodoTileComponent implements OnInit, OnDestroy {
   }
 
   editTask() {
-    console.log("Editing task");
     this.dialog.open<PopupComponent, PopupProps, TaskTile>(PopupComponent, {
       data: {
         create: false,

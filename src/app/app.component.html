@@ -4,6 +4,13 @@
 <main class="m-container">
     <div class="mt-5">
         <h1>Keep track of your TODOs</h1>
+        <div>
+            <h2>Change Theme</h2>
+            <mat-button-toggle-group name="theme" aria-label="Website Theme" (change)="updateTheme($event)">
+                <mat-button-toggle value="light" [checked]="theme == 'light'">Light</mat-button-toggle>
+                <mat-button-toggle value="dark" [checked]="theme == 'dark'">Dark</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
     </div>
     <div class="tasks pt-5 pb-5">
         <div *ngIf="dataLoading" class="justify-center flex">

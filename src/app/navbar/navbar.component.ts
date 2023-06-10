@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { getAuth, EmailAuthProvider, Auth, Unsubscribe } from '@angular/fire/auth';
 import * as firebaseui from 'firebaseui'
 import { SignInComponent } from '../sign-in/sign-in.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-navbar',
@@ -18,7 +19,6 @@ import { SignInComponent } from '../sign-in/sign-in.component';
 })
 export class NavbarComponent implements OnInit, OnDestroy { 
   private auth: Auth = inject(Auth);
-  constructor(public dialog: MatDialog, private store:Store<{tasks: TasksState, theme: AppTheme}>) {}
   public length = 0;
   public theme:AppTheme = "dark";
   tasksMaxIndexSubscription:Subscription|undefined;
@@ -27,6 +27,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   userId:string|undefined;
   unsubscribeAuthState: Unsubscribe|undefined;
   nextId = "";
+  
+  constructor(
+    public dialog: MatDialog, 
+    private store:Store<{tasks: TasksState, theme: AppTheme}>,
+    private snackBar: MatSnackBar) {}
   
   ngOnInit(): void {
     this.tasksMaxIndexSubscription = this.store.select("tasks").subscribe(tasks => {
@@ -47,16 +52,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
   openCreateTask() {
     if (this.userId !== undefined) {
       this.dialog.closeAll();
+      
       const date = new Date();
       date.setHours(0, 0, 0, 0);
+      const task = {
+        description: "",
+        due: date,
+        title: "",
+      };
+      
       this.dialog.open<PopupComponent, PopupProps, TaskTile>(PopupComponent, {
         data: {
           create: true,
-          task: {
-            description: "",
-            due: date,
-            title: "",
-          },
+          task,
           i: this.length,
           id: this.nextId,
         }
@@ -64,20 +72,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateTheme(e:MatButtonToggleChange) {
-    this.theme = e.value;
-    this.store.dispatch(updateTheme({theme: e.value}));
-  }
-
   openSignIn(): void {
     this.dialog.closeAll();
     const signInDialog = this.dialog.open(SignInComponent);
+    const snackBar = this.snackBar;
     
     const uiConfig:firebaseui.auth.Config = {
       signInOptions: [EmailAuthProvider.PROVIDER_ID],
       callbacks: {
           signInSuccessWithAuthResult() {
             signInDialog.close();
+            snackBar.open("Successfully signed in", "Dismiss", {
+              duration: 2500
+            });
             return false;
           },
       }
@@ -86,11 +93,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   handleSignOut() {
-    // this returns a promise => check that it has succeeded!
     this.auth.signOut().then(() => {
-      console.log("Signed Out");
+      this.snackBar.open("Signed Out", "Dismiss", {duration: 2500});
     }).catch(() => {
-      console.log("Failed to sign out");
+      this.snackBar.open("Failed to Sign Out", "Dismiss", {duration: 2500});
     });
   }
   

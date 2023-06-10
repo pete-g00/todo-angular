@@ -2,10 +2,6 @@
     <span>TODO Keeper</span>
     <span class="spacer"></span>
     <span>
-        <mat-button-toggle-group class="mr-4" name="theme" aria-label="Website Theme" (change)="updateTheme($event)">
-            <mat-button-toggle value="light" [checked]="theme == 'light'">Light</mat-button-toggle>
-            <mat-button-toggle value="dark" [checked]="theme == 'dark'">Dark</mat-button-toggle>
-        </mat-button-toggle-group>
         <button *ngIf="loggedIn" mat-button (click)="openCreateTask()">Add task</button>
         <button *ngIf="!loggedIn" mat-button (click)="openSignIn()">Sign In</button>
         <button *ngIf="loggedIn" mat-button (click)="handleSignOut()">Sign Out</button>

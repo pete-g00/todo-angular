@@ -1,11 +1,13 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { TaskTile, TaskTiles, TasksState } from './state/tasks/tasks.reducer';
-import { loadTasksFromDB, updateTask } from './state/tasks/tasks.actions';
+import { TaskTiles, TasksState } from './state/tasks/tasks.reducer';
+import { loadTasksFromDB } from './state/tasks/tasks.actions';
 import { AppTheme } from './state/theme/theme.reducer';
 import { Subscription } from 'rxjs';
 import { Auth, Unsubscribe, User } from '@angular/fire/auth';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { updateTheme } from './state/theme/theme.actions';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   unsubscribeAuthState: Unsubscribe|undefined;
   user:User|null = null;
   toInt = Number.parseInt;
+  theme:AppTheme = "dark";
 
   constructor(private store:Store<{tasks: TasksState; theme: AppTheme;}>) { }
 
@@ -37,6 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.store.dispatch(loadTasksFromDB({userId: user.uid}));
       }
     });
+    
     this.taskSubscription = this.store.select("tasks").subscribe(state => {
       this.errorLoadingData = false;
       if (this.user !== null) {
@@ -49,6 +53,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       } 
     });
+    
     this.themeSubscription = this.store.select("theme").subscribe(theme => {
       if (theme === "light") {
         document.body.classList.add("light-theme");
@@ -64,5 +69,10 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.unsubscribeAuthState) {
       this.unsubscribeAuthState();
     }
+  }
+
+  updateTheme(e:MatButtonToggleChange) {
+    this.theme = e.value;
+    this.store.dispatch(updateTheme({theme: e.value}));
   }
 }
