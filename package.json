@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "deploy": "gh-pages -d dist",
     "test": "ng test"
   },
   "private": true,
@@ -25,6 +26,7 @@
     "@ngrx/store": "^16.0.1",
     "firebase": "^9.22.2",
     "firebaseui": "^6.0.2",
+    "gh-pages": "^5.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
