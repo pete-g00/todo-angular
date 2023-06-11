@@ -37,7 +37,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.tasksMaxIndexSubscription = this.store.select("tasks").subscribe(tasks => {
       if (tasks.dataPresent) {
         this.length = tasks.tasks.length;
-        const maxId = Number.parseInt(tasks.indices[this.length-1]);
+        let maxId = -1;
+        for (let i=0; i<tasks.tasks.length; i++) {
+          const id = Number.parseInt(tasks.indices[i]);
+          if (id > maxId) {
+            maxId = id;
+          }
+        }
         this.nextId = (maxId+1).toString();
       } else {
         this.length = 0;
